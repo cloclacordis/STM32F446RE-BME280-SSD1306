@@ -1,0 +1,39 @@
+# Build artifacts
+/build/
+/Debug/
+/Release/
+*.o
+*.a
+*.elf
+*.bin
+*.map
+*.hex
+*.lst
+*.d
+*.su
+*.log
+
+# STM32CubeIDE / STM32CubeMX generated files
+.settings/
+.metadata/
+*.launch
+*.project
+*.cproject
+*.mxproject
+*.ioc
+
+# VS Code
+.vscode/
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Backup / temp files
+*.bak
+*.tmp
