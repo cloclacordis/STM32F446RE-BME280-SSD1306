@@ -2,9 +2,9 @@
 ### Stage 0 — Preparation & Init
 
 **Tasks & Results:**
-* Project structure created (`/Src`, `/Inc`, `/Docs`).
+* Project structure created (`/Src`, `/Inc`, `/Doc`).
 * Stub files added (`main.c`, `board_config.h`).
-* Development log initialized (`/Docs/Devlog`).
+* Development log initialized (`/Doc/Devlog`).
 
 **Next Steps:**
 * Draft a specification and define requirements.
