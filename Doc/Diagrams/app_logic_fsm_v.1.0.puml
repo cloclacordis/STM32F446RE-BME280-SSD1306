@@ -1,0 +1,34 @@
+@startuml
+
+skinparam BackgroundColor #F6FBFB
+skinparam Shadowing true
+skinparam RoundCorner 12
+skinparam DefaultFontName "Arial"
+skinparam DefaultFontSize 12
+
+skinparam {
+  BackgroundColor #EAF7F5
+  BorderColor #A7D3C9
+  FontColor #104033
+  RoundCorner 12
+}
+
+skinparam ArrowColor #5FA38F
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #CADFD9
+
+[*] --> INIT: Power On
+INIT --> IDLE: Init Successful
+INIT --> ERROR: Init Failed
+
+IDLE --> READ_SENSOR: Timer Expired
+READ_SENSOR --> UPDATE_DISPLAY: Data Ready
+READ_SENSOR --> ERROR: Read Failed
+
+UPDATE_DISPLAY --> IDLE: Display Updated
+UPDATE_DISPLAY --> ERROR: Display Failed
+
+ERROR --> [*]: Fatal Error
+ERROR --> IDLE: Error Recovered (e.g., reset)
+
+@enduml

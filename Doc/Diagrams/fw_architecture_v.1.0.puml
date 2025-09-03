@@ -1,0 +1,58 @@
+@startuml
+
+skinparam BackgroundColor #F6FBFB
+skinparam Shadowing true
+skinparam RoundCorner 12
+skinparam DefaultFontName "Arial"
+skinparam DefaultFontSize 12
+
+skinparam {
+  BackgroundColor #EAF7F5
+  BorderColor #A7D3C9
+  FontColor #104033
+  RoundCorner 12
+}
+
+skinparam ArrowColor #5FA38F
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #CADFD9
+
+package "Application Layer" {
+  [main.c]
+  [app_logic]
+}
+
+package "Device Drivers" {
+  [bme280_driver]
+  [ssd1306_driver]
+}
+
+package "Peripheral Drivers" {
+  [i2c_driver]
+  [uart_driver]
+}
+
+package "Board Support" {
+  [board_config]
+}
+
+package "System Layer" {
+  [startup_file]
+  [linker_script]
+}
+
+main.c --> app_logic
+app_logic --> bme280_driver
+app_logic --> ssd1306_driver
+app_logic --> uart_driver
+
+bme280_driver --> i2c_driver
+ssd1306_driver --> i2c_driver
+
+i2c_driver --> board_config
+uart_driver --> board_config
+
+board_config --> startup_file
+board_config --> linker_script
+
+@enduml
