@@ -23,7 +23,7 @@
 
 * Created PlantUML diagrams and placed sources/[exports](https://www.planttext.com) in `Doc/Diagrams`:
   
-  * `app_logic_fsm_v.1.0.puml` — system state machine (Init → Idle → Read Sensor → Update Display → Error).
+  * `fw_logic_fsm_v.1.0.puml` — system state machine (Init → Idle → Read Sensor → Update Display → Error).
   * `fw_architecture_v.1.0.puml` — layered architecture (Application, Device Drivers, Peripheral Drivers, Board Support, System Layer).
 
 * Preliminary `Makefile` added to project root:
@@ -51,7 +51,7 @@
 
 ### PlantUML sources (copied to `Doc/Diagrams`)
 
-**app_logic_fsm_v.1.0.puml**
+**fw_logic_fsm_v.1.0.puml**
 
 ```plantuml
 @startuml
