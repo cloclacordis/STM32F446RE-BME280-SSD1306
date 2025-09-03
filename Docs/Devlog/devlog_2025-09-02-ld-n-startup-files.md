@@ -6,10 +6,8 @@
 
 * Added vendor system files:
   * `STM32F446RETX_FLASH.ld` (linker script for execution from Flash).
-  * `STM32F446RETX_RAM.ld` (linker script for execution from RAM, typically for debug).
   * `startup_stm32f446retx.s` (startup assembly file with vector table and reset handler).
-  * `syscalls.c` and `sysmem.c` (added for potential standard library support; not used yet).
-* Created `Startup/` directory to hold system-level sources.
+* Created `System/` directory to hold system-level sources.
 
 **Next Steps:**
 
@@ -21,7 +19,7 @@
 
 > **Linker Scripts Notes:**
 > 
-> * `STM32F446RETX_FLASH.ld` и `STM32F446RETX_RAM.ld` define memory layout and section placement for Flash execution and RAM debugging.
+> * `STM32F446RETX_FLASH.ld` defines memory layout and section placement for Flash execution and RAM debugging.
 > * Linker scripts specify **VMA (runtime address)** and **LMA (load address)** for `.text`, `.data`, `.bss`, `.rodata` sections.
 > * Startup code handles copying `.data` from Flash to SRAM and zero-initialization of `.bss`.
 > * Key directives included: `MEMORY` (regions), `ENTRY` (reset handler), `SECTIONS` (map input sections to memory), `KEEP` (prevent removal of vector table), `ALIGN`, `PROVIDE`, `AT>` (VMA/LMA mapping).
