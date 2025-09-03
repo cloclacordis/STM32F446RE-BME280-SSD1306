@@ -5,6 +5,7 @@
 * Added vendor system files:
   * `STM32F446RETX_FLASH.ld` (linker script for execution from Flash).
   * `startup_stm32f446retx.s` (startup assembly file with vector table and reset handler).
+  * `syscalls.c`, `sysmem.c` (`Src` folder).
 * Created `Sys/` directory to hold system-level sources.
 
 **Next Steps:**
