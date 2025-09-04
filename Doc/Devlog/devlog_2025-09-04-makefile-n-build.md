@@ -7,6 +7,8 @@
 * Documentation files updated (proofreading).
 * Makefile updated (dependency); build tested successfully.
 
+![](assets/2025-09-04-build-test.png)
+
 **Next Steps:**
 
 * Complete testing of debugging and flashing tools (OpenOCD and GDB), verify development board operation.
