@@ -14,6 +14,8 @@ BUILD_DIR = Build
 # Source files
 C_SOURCES = \
 	Src/main.c
+	Src/sysmem.c
+	Src/syscalls.c
 
 # ASM sources (startup file)
 ASM_SOURCES = Sys/startup_stm32f446retx.s

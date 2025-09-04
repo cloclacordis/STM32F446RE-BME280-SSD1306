@@ -27,12 +27,12 @@ A bare-metal firmware for the STM32F446RE microcontroller that reads temperature
     ```
 
 * **FR4:** Debug Output
-  * The firmware shall output debug and status messages (e.g., „Initialization complete“, „BME280 read error“) via USART2 at 115200 8N1.
+  * The firmware shall output debug and status messages (e.g., „Initialization complete“, „BME280 read error“) via UART at 115200 8N1.
 
 ### 2.2. Should-Have (Post-MVP)
 
 * **FR5:** Error Handling
-  * The firmware shall implement basic I²C error detection (e.g., NACK detection) and report errors via the debug UART.
+  * The firmware shall implement basic I²C error detection and report errors via the debug UART.
   * The firmware shall maintain a safe state (e.g., display „Err“ or old data) in case of a sensor communication failure.
 
 ## 3. Non-Functional Requirements
@@ -52,4 +52,4 @@ A bare-metal firmware for the STM32F446RE microcontroller that reads temperature
 
 ## 5. State Diagram
 
-![Freehand Drawing.svg](Diagrams/app_logic_fsm_v.1.0.png)
+![](Diagrams/fw_logic_fsm_v.1.0.png)

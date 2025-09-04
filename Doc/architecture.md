@@ -16,22 +16,22 @@ The system follows a layered, modular architecture to promote separation of conc
 * Board Support Package (`board_config.h`).
 * System Layer (Startup File, Linker Script).
 
-![Freehand Drawing.svg](Diagrams/fw_architecture_v.1.0.png)
+![](Diagrams/fw_architecture_v.1.0.png)
 
 ## 3. Module Description
 
 * **System Layer:** Handles MCU startup, interrupt vector table, and memory layout.
 * **Board Support Package (BSP):** `board_config.h`. Centralizes hardware-specific configuration (pin mappings, peripheral addresses, clock settings).
 * **Peripheral Drivers:**
-  * `i2c_lowlevel.c`: Low-level I²C functions (init, read, write). API is device-agnostic.
-  * `uart_lowlevel.c`: Low-level UART functions (init, putchar, puts).
+  * `i2c_lowlevel.c`: Low-level I²C functions (`init`, `read`, `write`).
+  * `uart_lowlevel.c`: Low-level UART functions (`init`, `putchar`, `puts`).
 * **Device Drivers:**
   * `bme280.c`: Implements the BME280 sensor protocol. Depends on `i2c_lowlevel.c`.
   * `ssd1306.c`: Implements the SSD1306 display controller protocol. Depends on `i2c_lowlevel.c`.
 * **Application Logic:** `app_logic.c`. Contains the main state machine and coordination logic (e.g., read sensor -> update display -> wait).
 * **Main:** `main.c`. Initializes all modules and starts the main loop.
 
-## 4. Data Flow
+## 4. Dataflow
 
 1. Startup code runs -> `main()` is called (after the `ENTRY(Reset_Handler)` directive).
 2. `main()` initializes BSP, peripherals, devices.

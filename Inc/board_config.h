@@ -40,4 +40,3 @@
 #define LED_PIN             GPIO_PIN5   // Alias for the onboard LED (PA5)
 
 #endif // F446RE_BOARD_CONFIG_H
-

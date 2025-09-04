@@ -9,7 +9,8 @@
 
 #include "board_config.h"
 
-int main(void) {
+int main(void)
+{
     // Enable clock for GPIOA
     RCC_AHB1ENR |= GPIOAEN;
 
