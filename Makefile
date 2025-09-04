@@ -13,9 +13,9 @@ BUILD_DIR = Build
 
 # Source files
 C_SOURCES = \
-	Src/main.c
-	Src/sysmem.c
-	Src/syscalls.c
+    Src/main.c \
+    Src/sysmem.c \
+    Src/syscalls.c
 
 # ASM sources (startup file)
 ASM_SOURCES = Sys/startup_stm32f446retx.s
@@ -32,20 +32,20 @@ FPU = -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 
 # Compilation flags
 CFLAGS = $(CPU) $(FPU) \
-	-std=gnu11 \
-	-O0 -g3 \
-	-Wall -Wextra -Wpedantic \
-	-ffunction-sections -fdata-sections \
-	$(C_INCLUDES) \
-	-DSTM32F446xx
+    -std=gnu11 \
+    -O0 -g3 \
+    -Wall -Wextra -Wpedantic \
+    -ffunction-sections -fdata-sections \
+    $(C_INCLUDES) \
+    -DSTM32F446xx
 
 # Linker flags
 LDFLAGS = $(CPU) $(FPU) -specs=nosys.specs \
-	-T$(LDSCRIPT) \
-	-Wl,-Map=$(BUILD_DIR)/$(TARGET).map \
-	-Wl,--gc-sections \
-	--specs=nano.specs \
-	-static
+    -T$(LDSCRIPT) \
+    -Wl,-Map=$(BUILD_DIR)/$(TARGET).map \
+    -Wl,--gc-sections \
+    --specs=nano.specs \
+    -static
 
 # Generate list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
