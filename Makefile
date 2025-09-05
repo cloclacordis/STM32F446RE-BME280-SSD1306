@@ -1,92 +1,109 @@
-# Toolchain definitions
-CC = arm-none-eabi-gcc
-OBJCOPY = arm-none-eabi-objcopy
-OBJDUMP = arm-none-eabi-objdump
-SIZE = arm-none-eabi-size
-GDB = arm-none-eabi-gdb
+# Toolchain
+CC      := arm-none-eabi-gcc
+OBJCOPY := arm-none-eabi-objcopy
+OBJDUMP := arm-none-eabi-objdump
+SIZE    := arm-none-eabi-size
+GDB     := arm-none-eabi-gdb
+OPENOCD := openocd
 
 # Project name
-TARGET = Environmental_monitor
+TARGET   := blink_test
 
-# Build directory
-BUILD_DIR = Build
+# Directories
+DBG_DIR   := Debug
+SRC_DIR   := Src
+INC_DIR   := Inc
+STR_DIR   := Startup
 
-# Source files
-C_SOURCES = \
-    Src/main.c \
-    Src/sysmem.c \
-    Src/syscalls.c
+# Sources
+C_SOURCES := \
+    $(SRC_DIR)/main.c \
+    $(SRC_DIR)/sysmem.c \
+    $(SRC_DIR)/syscalls.c
 
-# ASM sources (startup file)
-ASM_SOURCES = Sys/startup_stm32f446retx.s
-
-# Include paths
-C_INCLUDES = -IInc
+ASM_SOURCES := \
+    $(STR_DIR)/startup_stm32f446retx.s
 
 # Linker script
-LDSCRIPT = Sys/STM32F446RETX_FLASH.ld
+LDSCRIPT := STM32F446RETX_FLASH.ld
 
-# CPU specific flags
-CPU = -mcpu=cortex-m4 -mthumb
-FPU = -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+# CPU & FPU
+CPU := -mcpu=cortex-m4 -mthumb
+FPU := -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 
-# Compilation flags
-CFLAGS = $(CPU) $(FPU) \
-    -std=gnu11 \
-    -O0 -g3 \
-    -Wall -Wextra -Wpedantic \
-    -ffunction-sections -fdata-sections \
-    $(C_INCLUDES) \
-    -DSTM32F446xx
-
-# Linker flags
-LDFLAGS = $(CPU) $(FPU) -specs=nosys.specs \
-    -T$(LDSCRIPT) \
-    -Wl,-Map=$(BUILD_DIR)/$(TARGET).map \
-    -Wl,--gc-sections \
+# Flags
+CFLAGS := $(CPU) $(FPU) \
+    -std=gnu11 -g3 -O0 \
+    -Wall \
+    -ffunction-sections \
+    -fdata-sections \
+    -fstack-usage \
+    -I$(INC_DIR) \
+    -DDEBUG \
+    -DSTM32 -DSTM32F4 \
+    -DSTM32F446RETx \
     --specs=nano.specs \
-    -static
+    -MMD -MP -MF"Src/main.d" -MT"Src/main.o"
 
-# Generate list of objects
-OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
-vpath %.c $(sort $(dir $(C_SOURCES)))
-OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
-vpath %.s $(sort $(dir $(ASM_SOURCES)))
+LDFLAGS := $(CPU) $(FPU) \
+    -T$(LDSCRIPT) \
+    -Wl,-Map=$(DBG_DIR)/$(TARGET).map \
+    -Wl,--gc-sections \
+    --specs=nosys.specs \
+    --specs=nano.specs \
+    -static \
+    -Wl,--start-group -lc -lm -Wl,--end-group
 
-# Default target
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).bin
+# Objects
+OBJECTS := $(patsubst $(SRC_DIR)/%.c,$(DBG_DIR)/%.o,$(C_SOURCES)) \
+           $(patsubst $(STR_DIR)/%.s,$(DBG_DIR)/%.o,$(ASM_SOURCES))
 
-# Create build directory
-$(BUILD_DIR):
+# Dependencies
+DEPS := $(OBJECTS:.o=.d)
+
+all: $(DBG_DIR)/$(TARGET).elf $(DBG_DIR)/$(TARGET).bin
+
+$(DBG_DIR):
 	mkdir -p $@
 
-# Compile C files
-$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+# Compile C
+$(DBG_DIR)/%.o: $(SRC_DIR)/%.c | $(DBG_DIR)
 	$(CC) -c $(CFLAGS) $< -o $@
 
-# Compile ASM files
-$(BUILD_DIR)/%.o: %.s | $(BUILD_DIR)
+# Compile ASM
+$(DBG_DIR)/%.o: $(STR_DIR)/%.s | $(DBG_DIR)
 	$(CC) -c $(CFLAGS) -x assembler-with-cpp $< -o $@
 
-# Link object files
-$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) | $(BUILD_DIR)
+# Link
+$(DBG_DIR)/$(TARGET).elf: $(OBJECTS)
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	$(SIZE) $@
 
-# Generate binary file
-$(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf | $(BUILD_DIR)
+# Binary
+$(DBG_DIR)/$(TARGET).bin: $(DBG_DIR)/$(TARGET).elf
 	$(OBJCOPY) -O binary $< $@
 
-# Flash the device using OpenOCD
-flash: $(BUILD_DIR)/$(TARGET).elf
-	openocd -f board/st_nucleo_f4.cfg -c "program $< verify reset exit"
+# Disassembly
+disasm: $(DBG_DIR)/$(TARGET).elf
+	$(OBJDUMP) -h -S $< > $(DBG_DIR)/$(TARGET).list
 
-# Start debug server
+# Flash
+flash: $(DBG_DIR)/$(TARGET).elf
+	$(OPENOCD) -f board/st_nucleo_f4.cfg -c "program $< verify reset exit"
+
+# Debug server
 debug-server:
-	openocd -f board/st_nucleo_f4.cfg
+	$(OPENOCD) -f board/st_nucleo_f4.cfg
 
-# Clean build artifacts
+# GDB
+gdb: $(DBG_DIR)/$(TARGET).elf
+	$(GDB) $< -ex "target remote localhost:3333"
+
+# Clean
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(DBG_DIR)
+	rm -f $(SRC_DIR)/*.d
 
-.PHONY: all clean flash debug-server
+.PHONY: all clean flash debug-server gdb disasm
+
+-include $(DEPS)
