@@ -1,6 +1,6 @@
 ## Date: 2025-09-03
 
-### Stage 1 — Specification & Architecture
+### Week 1 — Specification & Architecture
 
 **Tasks & Results:**
 

@@ -1,6 +1,6 @@
 ## Date: 2025-09-02
 
-### Stage 0 — Preparation & Init
+### Week 1 — Preparation & Init
 
 **Tasks & Results:**
 
