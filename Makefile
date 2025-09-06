@@ -3,17 +3,17 @@ CC      := arm-none-eabi-gcc
 OBJCOPY := arm-none-eabi-objcopy
 OBJDUMP := arm-none-eabi-objdump
 SIZE    := arm-none-eabi-size
-GDB     := arm-none-eabi-gdb
+GDB     := gdb-multiarch
 OPENOCD := openocd
 
 # Project name
-TARGET   := blink_test
+TARGET  := magic-smoke-test
 
 # Directories
-DBG_DIR   := Debug
-SRC_DIR   := Src
-INC_DIR   := Inc
-STR_DIR   := Startup
+DBG_DIR := Debug
+SRC_DIR := Src
+INC_DIR := Inc
+STR_DIR := Startup
 
 # Sources
 C_SOURCES := \
@@ -34,16 +34,18 @@ FPU := -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 # Flags
 CFLAGS := $(CPU) $(FPU) \
     -std=gnu11 -g3 -O0 \
-    -Wall \
+    -Wall -Wextra -Werror \
     -ffunction-sections \
     -fdata-sections \
     -fstack-usage \
     -I$(INC_DIR) \
     -DDEBUG \
-    -DSTM32 -DSTM32F4 \
+    -DSTM32 \
+    -DSTM32F4 \
     -DSTM32F446RETx \
+    -DNUCLEO_F446RE \
     --specs=nano.specs \
-    -MMD -MP -MF"Src/main.d" -MT"Src/main.o"
+    -MMD -MP
 
 LDFLAGS := $(CPU) $(FPU) \
     -T$(LDSCRIPT) \
@@ -61,6 +63,10 @@ OBJECTS := $(patsubst $(SRC_DIR)/%.c,$(DBG_DIR)/%.o,$(C_SOURCES)) \
 # Dependencies
 DEPS := $(OBJECTS:.o=.d)
 
+# OpenOCD configuration
+OCD_CFG   := board/st_nucleo_f4.cfg
+
+# Build all
 all: $(DBG_DIR)/$(TARGET).elf $(DBG_DIR)/$(TARGET).bin
 
 $(DBG_DIR):
@@ -68,11 +74,11 @@ $(DBG_DIR):
 
 # Compile C
 $(DBG_DIR)/%.o: $(SRC_DIR)/%.c | $(DBG_DIR)
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) -MF"$(@:.o=.d)" -MT"$@" $< -o $@
 
 # Compile ASM
 $(DBG_DIR)/%.o: $(STR_DIR)/%.s | $(DBG_DIR)
-	$(CC) -c $(CFLAGS) -x assembler-with-cpp $< -o $@
+	$(CC) -c $(CFLAGS) -x assembler-with-cpp -MF"$(@:.o=.d)" -MT"$@" $< -o $@
 
 # Link
 $(DBG_DIR)/$(TARGET).elf: $(OBJECTS)
@@ -87,23 +93,18 @@ $(DBG_DIR)/$(TARGET).bin: $(DBG_DIR)/$(TARGET).elf
 disasm: $(DBG_DIR)/$(TARGET).elf
 	$(OBJDUMP) -h -S $< > $(DBG_DIR)/$(TARGET).list
 
-# Flash
-flash: $(DBG_DIR)/$(TARGET).elf
-	$(OPENOCD) -f board/st_nucleo_f4.cfg -c "program $< verify reset exit"
-
-# Debug server
-debug-server:
-	$(OPENOCD) -f board/st_nucleo_f4.cfg
-
-# GDB
-gdb: $(DBG_DIR)/$(TARGET).elf
-	$(GDB) $< -ex "target remote localhost:3333"
-
-# Clean
+# Clean all
 clean:
 	rm -rf $(DBG_DIR)
-	rm -f $(SRC_DIR)/*.d
 
-.PHONY: all clean flash debug-server gdb disasm
+# Launch OpenOCD (in terminal №1)
+ocd:
+	cd $(DBG_DIR) && $(OPENOCD) -f $(OCD_CFG)
+
+# Launch GDB (in terminal №2)
+gdb:
+	cd $(DBG_DIR) && $(GDB)
+
+.PHONY: all disasm clean ocd gdb
 
 -include $(DEPS)
