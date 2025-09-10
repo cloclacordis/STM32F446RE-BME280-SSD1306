@@ -1,34 +1,33 @@
 @startuml
 
-skinparam BackgroundColor #F6FBFB
-skinparam Shadowing true
-skinparam RoundCorner 12
-skinparam DefaultFontName "Arial"
-skinparam DefaultFontSize 12
-
-skinparam {
-  BackgroundColor #EAF7F5
-  BorderColor #A7D3C9
-  FontColor #104033
-  RoundCorner 12
-}
-
+skinparam backgroundColor #F6FBFB
+skinparam shadowing true
+skinparam roundcorner 12
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 12
 skinparam ArrowColor #5FA38F
-skinparam NoteBackgroundColor #FFFFFF
-skinparam NoteBorderColor #CADFD9
+skinparam componentStyle rectangle
 
-[*] --> INIT: Power On
-INIT --> IDLE: Init Successful
-INIT --> ERROR: Init Failed
+[*] --> INIT : Power On
+INIT --> IDLE : Init OK
+INIT --> ERROR : Init Failed
 
-IDLE --> READ_SENSOR: Timer Expired
-READ_SENSOR --> UPDATE_DISPLAY: Data Ready
-READ_SENSOR --> ERROR: Read Failed
+IDLE --> READ_SENSOR : Timer Expired (5 s)
 
-UPDATE_DISPLAY --> IDLE: Display Updated
-UPDATE_DISPLAY --> ERROR: Display Failed
+READ_SENSOR --> READ_SENSOR : Transient Error / Retry < 3
+READ_SENSOR --> UPDATE_DISPLAY : Data Ready
+READ_SENSOR --> ERROR : Retry >= 3
 
-ERROR --> [*]: Fatal Error
-ERROR --> IDLE: Error Recovered (e.g., reset)
+UPDATE_DISPLAY --> UPDATE_DISPLAY : Transient Error / Retry < 2
+UPDATE_DISPLAY --> IDLE : Display Updated
+UPDATE_DISPLAY --> ERROR : Retry >= 2
+
+ERROR --> IDLE : Error Recovered
+ERROR --> [*] : Fatal Error
+
+note bottom of ERROR
+  Log via UART. Attempt I2C bus recovery.
+  If unrecoverable -> Display "Err", Watchdog reset to INIT.
+end note
 
 @enduml

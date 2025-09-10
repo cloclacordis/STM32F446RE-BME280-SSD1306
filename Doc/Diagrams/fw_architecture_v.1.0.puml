@@ -1,58 +1,69 @@
 @startuml
 
-skinparam BackgroundColor #F6FBFB
-skinparam Shadowing true
-skinparam RoundCorner 12
-skinparam DefaultFontName "Arial"
-skinparam DefaultFontSize 12
+skinparam backgroundColor #F6FBFB
+skinparam shadowing true
+skinparam roundcorner 8
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 12
+skinparam componentStyle rectangle
 
-skinparam {
-  BackgroundColor #EAF7F5
-  BorderColor #A7D3C9
-  FontColor #104033
-  RoundCorner 12
-}
+skinparam rectangle {
+  BackgroundColor<<System>> #E9F5F2
+  BorderColor<<System>> #7FBFA6
 
-skinparam ArrowColor #5FA38F
-skinparam NoteBackgroundColor #FFFFFF
-skinparam NoteBorderColor #CADFD9
+  BackgroundColor<<BSP>> #FFF8E6
+  BorderColor<<BSP>> #E6C07D
 
-package "Application Layer" {
-  [main.c]
-  [app_logic]
-}
+  BackgroundColor<<Peripheral>> #F2F7FF
+  BorderColor<<Peripheral>> #9AB4FF
 
-package "Device Drivers" {
-  [bme280_driver]
-  [ssd1306_driver]
-}
+  BackgroundColor<<Driver>> #F5F5F5
+  BorderColor<<Driver>> #BDBDBD
 
-package "Peripheral Drivers" {
-  [i2c_driver]
-  [uart_driver]
-}
-
-package "Board Support" {
-  [board_config]
+  BackgroundColor<<App>> #FFF5F5
+  BorderColor<<App>> #F2A0A0
 }
 
 package "System Layer" {
-  [startup_file]
-  [linker_script]
+  [startup.s] as startup
+  [linker.ld] as linker
 }
 
-main.c --> app_logic
-app_logic --> bme280_driver
-app_logic --> ssd1306_driver
-app_logic --> uart_driver
+package "Board Support" {
+  [board_config.h] as board_cfg
+}
 
-bme280_driver --> i2c_driver
-ssd1306_driver --> i2c_driver
+package "Peripheral Drivers" {
+  [i2c_driver] as i2c_ll
+  [uart_driver] as uart_ll
+}
 
-i2c_driver --> board_config
-uart_driver --> board_config
+package "Device Drivers" {
+  [bme280_driver] as bme280
+  [ssd1306_driver] as ssd1306
+}
 
-board_config --> startup_file
-board_config --> linker_script
+package "Application" {
+  [main.c] as mainc
+  [app_logic] as app_logic
+}
+
+linker <.. startup : init
+
+startup <.. mainc : entry
+mainc --> app_logic : run
+
+app_logic ==> bme280 : read
+app_logic ==> ssd1306 : update
+app_logic ==> uart_ll : send
+
+bme280 --> i2c_ll : I2C
+ssd1306 --> i2c_ll : I2C
+
+i2c_ll --> board_cfg : cfg
+uart_ll --> board_cfg : cfg
+
+board_cfg ..> linker : setup
+board_cfg <.. mainc : cfg
 
 @enduml
