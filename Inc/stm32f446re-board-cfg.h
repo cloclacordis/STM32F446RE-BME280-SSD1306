@@ -1,13 +1,14 @@
 /*
  * File: stm32f446re-board-cfg.h
  * Project: STM32F446RE-BME280-SSD1306 Bare-Metal C Firmware
- * Description: Register definitions and bit masks for STM32F446RE
- * Author: Timofei Alekseenko
- * License: MIT
- * Year: 2025
+ * Description: Register definitions and bit masks for STM32F446RET6
+ * Author (of modifications): Timofei Alekseenko
  *
- * Based on example code from:
- * Copyright (c) 2023 Packt (MIT License)
+ * Copyright (c) 2023 Packt (original code)
+ * SPDX-License-Identifier: MIT
+ *
+ * Modifications (c) 2025 Timofei Alekseenko
+ * SPDX-License-Identifier: MIT
  */
 
 #ifndef F446RE_BOARD_CONFIG_H

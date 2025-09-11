@@ -1,3 +1,10 @@
+# File: Makefile
+# Project: STM32F446RE-BME280-SSD1306 Bare-Metal C Firmware
+# Description: Build system for the firmware using GNU Arm Embedded Toolchain
+# Author: Timofei Alekseenko
+# Copyright (c) 2025 Timofei Alekseenko
+# SPDX-License-Identifier: MIT
+
 # Toolchain
 CC      := arm-none-eabi-gcc
 OBJCOPY := arm-none-eabi-objcopy
