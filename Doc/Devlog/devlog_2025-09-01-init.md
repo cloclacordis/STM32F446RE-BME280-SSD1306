@@ -5,7 +5,7 @@
 **Tasks & Results:**
 
 * Project structure created (`/Src`, `/Inc`, `/Doc`).
-* Stub files added (`main.c`, `board_config.h`).
+* Stub files added (`main.c`, `stm32f446re-board-cfg.h`).
 * Development log initialized (`/Doc/Devlog`).
 
 **Next Steps:**

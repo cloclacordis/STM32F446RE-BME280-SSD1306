@@ -1,13 +1,16 @@
-/*******************************************************************
+/*
  * File: main.c
  * Project: STM32F446RE-BME280-SSD1306 Bare-Metal C Firmware
  * Description: Minimal main program to toggle PA5 (LED)
  * Author: Timofei Alekseenko
  * License: MIT
  * Year: 2025
- *******************************************************************/
+ *
+ * Based on example code from:
+ * Copyright (c) 2023 Packt (MIT License)
+ */
 
-#include "board_config.h"
+#include "stm32f446re-board-cfg.h"
 
 int main(void)
 {

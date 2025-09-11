@@ -13,7 +13,7 @@ The system follows a layered, modular architecture to promote separation of conc
 * Application Layer (`app_logic.c`, `main.c`).
 * Device Drivers (`bme280.c`, `ssd1306.c`).
 * Peripheral Drivers (`i2c_lowlevel.c`, `uart_lowlevel.c`).
-* Board Support Package (`board_config.h`).
+* Board Support Package (`stm32f446re-board-cfg.h`).
 * System Layer (Startup File, Linker Script).
 
 ![](Diagrams/fw_architecture_v.1.0.png)
@@ -21,7 +21,7 @@ The system follows a layered, modular architecture to promote separation of conc
 ## 3. Module Description
 
 * **System Layer:** Handles MCU startup, interrupt vector table, and memory layout.
-* **Board Support Package (BSP):** `board_config.h`. Centralizes hardware-specific configuration (pin mappings, peripheral addresses, clock settings).
+* **Board Support Package (BSP):** `stm32f446re-board-cfg.h`. Centralizes hardware-specific configuration (pin mappings, peripheral addresses, clock settings).
 * **Peripheral Drivers:**
   * `i2c_lowlevel.c`: Low-level I²C functions (`init`, `read`, `write`).
   * `uart_lowlevel.c`: Low-level UART functions (`init`, `putchar`, `puts`).
